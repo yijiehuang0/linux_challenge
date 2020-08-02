@@ -1,0 +1,6 @@
+I ran the following command:
+uname -r > task2.txt
+
+Output:
+
+5.8.0-rc5-eudyptula+

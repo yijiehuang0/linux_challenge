@@ -1,0 +1,18 @@
+
+
+
+
+Signed-off-by: EJ Huang <yijie.huang@berkeley.edu>
+diff --git a/Makefile b/Makefile
+index 0b5f8538b..d7897ce5a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,7 @@
+ VERSION = 5
+ PATCHLEVEL = 8
+ SUBLEVEL = 0
+-EXTRAVERSION = -rc5
++EXTRAVERSION = -rc5-eudyptula
+ NAME = Kleptomaniac Octopus
+
+ # *DOCUMENTATION*
