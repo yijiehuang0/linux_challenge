@@ -1,0 +1,1 @@
+cmd_/home/vagrant/challenge/5/usb_helloworld.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/vagrant/challenge/5/usb_helloworld.ko /home/vagrant/challenge/5/usb_helloworld.o /home/vagrant/challenge/5/usb_helloworld.mod.o;  true
