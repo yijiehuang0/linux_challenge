@@ -1,6 +1,6 @@
-#include <klinux/module.h>
-#include <klinux/kernel.h>
-#include <klinux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("EJ Huang");
