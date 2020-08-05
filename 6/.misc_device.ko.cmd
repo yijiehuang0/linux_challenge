@@ -1,1 +1,0 @@
-cmd_/home/yijiehuang/linux_challenge/6/misc_device.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/yijiehuang/linux_challenge/6/misc_device.ko /home/yijiehuang/linux_challenge/6/misc_device.o /home/yijiehuang/linux_challenge/6/misc_device.mod.o;  true
