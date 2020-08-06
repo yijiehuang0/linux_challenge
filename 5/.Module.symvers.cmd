@@ -1,1 +1,0 @@
-cmd_/home/vagrant/challenge/5/Module.symvers := sed 's/ko$$/o/' /home/vagrant/challenge/5/modules.order | scripts/mod/modpost  -a   -o /home/vagrant/challenge/5/Module.symvers -e -i Module.symvers   -T -
