@@ -17,6 +17,7 @@
 #include <linux/string.h>
 #include <linux/jiffies.h>
 #include <linux/spinlock.h>
+#include <linux/rwsem.h>
 
 static ssize_t eudyptula_read(struct file *, char *, size_t, loff_t *);
 static ssize_t eudyptula_write(struct file *, const char *, size_t, loff_t *);
@@ -26,7 +27,7 @@ static ssize_t foo_write(struct file *, const char *, size_t, loff_t *);
 static char *eudyptula_id = "5d658d788cc9";
 static struct dentry *dir;
 
-static DEFINE_RWLOCK(foo_lock);
+static DECLARE_RWSEM(RW_SEMA);
 static char foo_msg[PAGE_SIZE];
 
 static const struct file_operations eudyptula_fops = {
@@ -70,10 +71,10 @@ static ssize_t foo_read(struct file *f, char *buf, size_t count,
 {
 	int ret;
 
-	read_lock(&foo_lock);
+    down_read(&RW_SEMA);
 	ret = simple_read_from_buffer(buf, count, offset, foo_msg,
 		strlen(foo_msg));
-	read_unlock(&foo_lock);
+	up_read(&RW_SEMA);
 
 	return ret;
 }
@@ -86,12 +87,12 @@ static ssize_t foo_write(struct file *f, const char *buf, size_t count,
 	if (count >= PAGE_SIZE)
 		return -EINVAL;
 
-	write_lock(&foo_lock);
+    down_write(&RW_SEMA);
 	ret = simple_write_to_buffer(foo_msg, sizeof(foo_msg), offset,
 		buf, count);
 	if (ret > 0)
 		foo_msg[ret] = '\0';
-	write_unlock(&foo_lock);
+    up_write(&RW_SEMA);
 
 	return ret;
 }
@@ -99,22 +100,23 @@ static ssize_t foo_write(struct file *f, const char *buf, size_t count,
 int init_module(void)
 {
 	dir = debugfs_create_dir("eudyptula", NULL);
-	if (IS_ERR(dir)) {
+    foo_msg[0] = '\0';
+	if (IS_ERR_VALUE(dir)) {
 		pr_debug("task08: failed to create /sys/kernel/debug/eudyptula\n");
 		return -ENODEV;
 	}
 
-	if (!debugfs_create_file("id", 0666, dir, NULL, &eudyptula_fops)) {
+	if (IS_ERR_VALUE(debugfs_create_file("id", 0666, dir, NULL, &eudyptula_fops))) {
 		pr_debug("task08: failed to create id file\n");
 		return -ENODEV;
 	}
 
-	if (!debugfs_create_u32("jiffies", 0444, dir, (u32 *)&jiffies)) {
+	if (IS_ERR_VALUE(!debugfs_create_u32("jiffies", 0444, dir, (u32*)&jiffies))) {
 		pr_debug("task08: failed to create jiffies file\n");
 		return -ENODEV;
 	}
 
-	if (!debugfs_create_file("foo", 0644, dir, NULL, &foo_fops)) {
+	if (IS_ERR_VALUE(!debugfs_create_file("foo", 0644, dir, NULL, &foo_fops))) {
 		pr_debug("task08: failed to create foo file\n");
 		return -ENODEV;
 	}
